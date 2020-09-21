@@ -86,37 +86,60 @@ app.prepare().then(function () {
     extended: true
   }));
   server.use(_bodyParser["default"].json());
-  server.get('/staffs', function (req, res) {
-    try {
-      var staff = _staff["default"].findAllStaff();
-
-      console.log('them staff', staff);
-      return successResponse(res, 200, 'All Staff members', staff);
-    } catch (error) {
-      return errorResponse(res, 500, error);
-    }
-  });
-  server["delete"]('/staffs/:email', /*#__PURE__*/function () {
+  server.get('/staffs', /*#__PURE__*/function () {
     var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
-      var email, staff, updates;
+      var staff;
       return _regenerator["default"].wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
+              _context.next = 3;
+              return _staff["default"].findAllStaff();
+
+            case 3:
+              staff = _context.sent;
+              console.log('them staff', staff);
+              return _context.abrupt("return", successResponse(res, 200, 'All Staff members', staff));
+
+            case 8:
+              _context.prev = 8;
+              _context.t0 = _context["catch"](0);
+              return _context.abrupt("return", errorResponse(res, 500, _context.t0));
+
+            case 11:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[0, 8]]);
+    }));
+
+    return function (_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+  server["delete"]('/staffs/:email', /*#__PURE__*/function () {
+    var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
+      var email, staff, updates;
+      return _regenerator["default"].wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
               email = req.params.email;
-              _context.next = 4;
+              _context2.next = 4;
               return _staff["default"].findStaff('email', email);
 
             case 4:
-              staff = _context.sent;
+              staff = _context2.sent;
 
               if (!staff) {
-                _context.next = 10;
+                _context2.next = 10;
                 break;
               }
 
-              _context.next = 8;
+              _context2.next = 8;
               return _models.Staff.destroy({
                 where: {
                   email: email
@@ -125,131 +148,153 @@ app.prepare().then(function () {
               });
 
             case 8:
-              _context.next = 11;
+              _context2.next = 11;
               break;
 
             case 10:
-              return _context.abrupt("return", errorResponse(res, 404, 'Staff not found'));
+              return _context2.abrupt("return", errorResponse(res, 404, 'Staff not found'));
 
             case 11:
               updates = _staff["default"].findAllStaff();
-              return _context.abrupt("return", successResponse(res, 200, 'All Staff members', updates));
+              return _context2.abrupt("return", successResponse(res, 200, 'All Staff members', updates));
 
             case 15:
-              _context.prev = 15;
-              _context.t0 = _context["catch"](0);
-              return _context.abrupt("return", errorResponse(res, 500, _context.t0));
+              _context2.prev = 15;
+              _context2.t0 = _context2["catch"](0);
+              return _context2.abrupt("return", errorResponse(res, 500, _context2.t0));
 
             case 18:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee, null, [[0, 15]]);
+      }, _callee2, null, [[0, 15]]);
     }));
 
-    return function (_x, _x2) {
-      return _ref.apply(this, arguments);
+    return function (_x3, _x4) {
+      return _ref2.apply(this, arguments);
     };
   }());
-  server.post('/sendinvite', function (req, res) {
-    try {
-      var token = 'rerteESDew432f';
-      console.log('reqss', req.body);
+  server.post('/sendinvite', /*#__PURE__*/function () {
+    var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(req, res) {
+      var token, data, updates;
+      return _regenerator["default"].wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              token = 'rerteESDew432f';
+              _context4.next = 4;
+              return _staff["default"].getAllReqBody(req.body);
 
-      var data = _staff["default"].getAllReqBody(req.body);
+            case 4:
+              data = _context4.sent;
+              console.log('reqss', data);
+              data && data.forEach( /*#__PURE__*/function () {
+                var _ref4 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(d) {
+                  var userFound, isInvited, emailSent, newUser, _emailSent;
 
-      data && data.forEach( /*#__PURE__*/function () {
-        var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(d) {
-          var userFound, isInvited, emailSent, newUser, _emailSent;
+                  return _regenerator["default"].wrap(function _callee3$(_context3) {
+                    while (1) {
+                      switch (_context3.prev = _context3.next) {
+                        case 0:
+                          _context3.prev = 0;
+                          _context3.next = 3;
+                          return _staff["default"].findStaff('email', d.email);
 
-          return _regenerator["default"].wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  _context2.prev = 0;
-                  _context2.next = 3;
-                  return _staff["default"].findStaff('email', d.email);
+                        case 3:
+                          userFound = _context3.sent;
+                          console.log('userFound', userFound);
 
-                case 3:
-                  userFound = _context2.sent;
-                  console.log('userFound', userFound);
+                          if (!userFound) {
+                            _context3.next = 14;
+                            break;
+                          }
 
-                  if (!userFound) {
-                    _context2.next = 14;
-                    break;
-                  }
+                          isInvited = userFound.inviteSent === 'Yes';
 
-                  isInvited = userFound.inviteSent === 'Yes';
+                          if (isInvited) {
+                            _context3.next = 12;
+                            break;
+                          }
 
-                  if (isInvited) {
-                    _context2.next = 12;
-                    break;
-                  }
+                          _context3.next = 10;
+                          return (0, _mail["default"])(userFound, token);
 
-                  _context2.next = 10;
-                  return (0, _mail["default"])(userFound, token);
+                        case 10:
+                          emailSent = _context3.sent;
+                          if (emailSent || emailSent === 'sent') _staff["default"].updateStaff(userFound.email, {
+                            inviteSent: 'Yes'
+                          });
 
-                case 10:
-                  emailSent = _context2.sent;
-                  if (emailSent || emailSent === 'sent') _staff["default"].updateStaff(userFound.email, {
-                    inviteSent: 'Yes'
-                  });
+                        case 12:
+                          _context3.next = 23;
+                          break;
 
-                case 12:
-                  _context2.next = 22;
-                  break;
+                        case 14:
+                          _context3.next = 16;
+                          return _staff["default"].createStaff(d);
 
-                case 14:
-                  _context2.next = 16;
-                  return _staff["default"].createStaff(d);
+                        case 16:
+                          newUser = _context3.sent;
+                          console.log('new user', newUser);
 
-                case 16:
-                  newUser = _context2.sent;
+                          if (!(newUser && newUser.email)) {
+                            _context3.next = 23;
+                            break;
+                          }
 
-                  if (!(newUser && newUser.email)) {
-                    _context2.next = 22;
-                    break;
-                  }
+                          _context3.next = 21;
+                          return (0, _mail["default"])(newUser, token);
 
-                  _context2.next = 20;
-                  return (0, _mail["default"])(newUser, token);
+                        case 21:
+                          _emailSent = _context3.sent;
+                          if (!_emailSent || _emailSent === 'fail') _staff["default"].updateStaff(newUser.email, {
+                            inviteSent: 'No'
+                          });
 
-                case 20:
-                  _emailSent = _context2.sent;
-                  if (!_emailSent || _emailSent === 'fail') _staff["default"].updateStaff(newUser.email, {
-                    inviteSent: 'No'
-                  });
+                        case 23:
+                          _context3.next = 28;
+                          break;
 
-                case 22:
-                  _context2.next = 27;
-                  break;
+                        case 25:
+                          _context3.prev = 25;
+                          _context3.t0 = _context3["catch"](0);
+                          console.log('problems with user', _context3.t0);
 
-                case 24:
-                  _context2.prev = 24;
-                  _context2.t0 = _context2["catch"](0);
-                  console.log('problems with user', _context2.t0);
+                        case 28:
+                        case "end":
+                          return _context3.stop();
+                      }
+                    }
+                  }, _callee3, null, [[0, 25]]);
+                }));
 
-                case 27:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee2, null, [[0, 24]]);
-        }));
+                return function (_x7) {
+                  return _ref4.apply(this, arguments);
+                };
+              }());
+              updates = _staff["default"].findAllStaff();
+              return _context4.abrupt("return", successResponse(res, 201, 'Invites Sent', updates));
 
-        return function (_x3) {
-          return _ref2.apply(this, arguments);
-        };
-      }());
+            case 11:
+              _context4.prev = 11;
+              _context4.t0 = _context4["catch"](0);
+              console.log('error', _context4.t0);
+              return _context4.abrupt("return", errorResponse(res, 500, _context4.t0));
 
-      var updates = _staff["default"].findAllStaff();
+            case 15:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 11]]);
+    }));
 
-      return successResponse(res, 201, 'Invites Sent', updates);
-    } catch (error) {
-      return errorResponse(res, 500, error);
-    }
-  }); // server.use('/api', (req, res) => res.json('yo welcome'))
+    return function (_x5, _x6) {
+      return _ref3.apply(this, arguments);
+    };
+  }()); // server.use('/api', (req, res) => res.json('yo welcome'))
 
   server.use(_routes["default"]); // Use React application on server
 

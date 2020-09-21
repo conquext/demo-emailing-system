@@ -1,13 +1,14 @@
-import dotEnv from 'dotenv'
-dotEnv.config()
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config()
 
-export default {
+module.exports = {
   development: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: 'postgres',
+    use_env_variable: 'DB_URL',
   },
   test: {
     username: process.env.DB_USERNAME_TEST,
@@ -18,6 +19,6 @@ export default {
     operatorsAliases: false,
   },
   production: {
-    use_env_variable: 'DATABASE_URL',
+    use_env_variable: 'DB_URL',
   },
 }

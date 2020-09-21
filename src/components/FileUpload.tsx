@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getFileSizeAndUnit, isEmpty } from '@utils/helpers'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { toast as toaster } from 'react-toastify'
 
 interface UploadProps {
@@ -9,7 +9,8 @@ interface UploadProps {
   allowedExtensions?: string[]
   maxFileSize?: number
   className?: string
-  render: (uploadElement: HTMLElement | null) => JSX.Element
+  render: (el: HTMLInputElement | null) => JSX.Element
+  // render: (uploadElement: HTMLElement | null) => JSX.Element
   refreshCallback?: (data: UploadState) => void
   uploadHandler?: (
     data: FormData,
@@ -78,6 +79,7 @@ export default function UploadComponent({
 }: UploadProps) {
   const [state, setState] = useState<UploadState>(initialState)
   const [runAutoUpload, setAutoUpload] = useState(false)
+  const [load, reload] = useState(false)
 
   function updateState(update: UploadStateOptional) {
     const newState = { ...state, ...update }
@@ -237,14 +239,23 @@ export default function UploadComponent({
   }
 
   const uploadArea = useRef(null)
+  const uploadDomRef = useRef<HTMLInputElement>(null)
+  const dc = useRef(null)
+  const uploadDom = '#common-upload-component'
 
   useEffect(() => {
-    uploadArea.current = document.querySelector(
-      '#common-upload-component'
-    ) as HTMLElement
+    dc.current = document
+    uploadArea.current = document.querySelector(uploadDom) as HTMLElement
     if (runAutoUpload) onClickHandler(state)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runAutoUpload, uploadArea.current])
+  }, [runAutoUpload, uploadDomRef.current])
+
+  const getUploadArea = () => {
+    if (dc.current) return dc.current.querySelector(uploadDom) as HTMLElement
+    else if (uploadArea.current) return uploadArea.current
+    else if (uploadDomRef.current) return uploadDomRef.current
+    else if (!load) reload(true)
+  }
 
   return (
     <div
@@ -260,6 +271,7 @@ export default function UploadComponent({
               <input
                 type="file"
                 id="common-upload-component"
+                ref={uploadDomRef}
                 disabled={Boolean(disabled)}
                 className="form-control"
                 accept="xls, xlsx"
@@ -279,7 +291,7 @@ export default function UploadComponent({
           </div>
         </div>
       </div>
-      {render(uploadArea.current)}
+      {render(getUploadArea())}
     </div>
   )
 }

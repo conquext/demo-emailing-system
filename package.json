@@ -8,7 +8,7 @@
     "start2": "next start",
     "build": "rm -rf ./build && mkdir build && babel ./src/server --out-dir build",
     "start": "node ./build/index.js",
-    "serve:dev": "nodemon --exec babel-node src/server/index.js --port 3003",
+    "serve:dev": "nodemon --exec babel-node src/server/index.js",
     "test": "npm run test:format && npm run test:lint && npm run test:unit",
     "test:unit": "jest",
     "test:unit:watch": "jest --watch",
@@ -50,6 +50,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "formik": "^2.1.5",
     "framer-motion": "^2.6.15",
     "match-sorter": "^4.2.1",
     "moment": "^2.28.0",
@@ -74,7 +75,8 @@
     "url": "^0.11.0",
     "use-dark-mode": "^2.3.1",
     "uuid": "^8.3.0",
-    "xlsx": "^0.16.7"
+    "xlsx": "^0.16.7",
+    "yup": "^0.29.3"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.11.5",
@@ -113,5 +115,5 @@
     "tailwindcss-spinner": "^1.2.0",
     "typescript": "^3.9.3"
   },
-  "proxy": "http://localhost:3002"
+  "proxy": "http://localhost:3003"
 }

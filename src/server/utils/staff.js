@@ -15,43 +15,56 @@ const properCase = (str) => {
   return str
 }
 
-export default class StaffUtils {
-  fieldNames = [
-    'Serial No',
-    'firstName',
-    'lastName',
-    'email',
-    'inviteSent',
-    'testSent',
-    'testStatus',
-  ]
+export const fieldNames = [
+  'Serial No',
+  'firstName',
+  'lastName',
+  'email',
+  'inviteSent',
+  'testSent',
+  'testStatus',
+]
 
+export default class StaffUtils {
   static getRequestBody(body) {
     let dataObj = {}
-    this.fieldNames.forEach((field) => {
+    fieldNames.forEach((field) => {
       dataObj[field] =
-        body[field]?.toLowerCase() === 'na' ? properCase(body[field]) : 'NA'
+        body[field]?.toLowerCase() !== 'na' ? properCase(body[field]) : 'NA'
     })
     return dataObj
   }
+
   static getAllReqBody(body) {
-    const data = []
+    const xdata = []
     Array.from(body).forEach((data) => {
       let dataObj = {}
-      this.fieldNames.forEach((field) => {
+
+      fieldNames.forEach((field) => {
         dataObj[field] =
-          data[field]?.toLowerCase() === 'na' ? properCase(data[field]) : 'NA'
+          data[field]?.toLowerCase() !== 'na' ? properCase(data[field]) : 'NA'
       })
-      data.push(dataObj)
+      xdata.push(dataObj)
     })
 
-    return data
+    return xdata
   }
 
   static async createStaff(data) {
     try {
       const newStaff = await Staff.create(data)
       return newStaff
+    } catch (error) {
+      throw error
+    }
+  }
+  static async removeStaff(key, value, options = {}) {
+    try {
+      const deletedStaff = await Staff.destroy({
+        where: { [key]: value },
+        ...options,
+      })
+      return deletedStaff
     } catch (error) {
       throw error
     }
@@ -131,7 +144,7 @@ export default class StaffUtils {
 
   static async getStaffField(withoutId, body) {
     const data = {}
-    let acceptedFields = this.fieldNames
+    let acceptedFields = fieldNames
     if (withoutId)
       acceptedFields = acceptedFields.filter((field) => field !== 'id')
     Object.entries(body).forEach(([key, value]) => {

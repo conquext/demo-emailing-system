@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
@@ -13,13 +13,13 @@ var _fs = _interopRequireDefault(require("fs"));
 
 var _path = _interopRequireDefault(require("path"));
 
+var _config = _interopRequireDefault(require("../config/config.js"));
+
 var basename = _path["default"].basename(__filename);
 
 var db = {};
-var env = process.env.NODE_ENV || 'development'; // eslint-disable-next-line @typescript-eslint/no-var-requires
-
-var config = require(__dirname + '/../config/config.js')[env];
-
+var env = process.env.NODE_ENV || 'development';
+var config = _config["default"][env];
 var sequelize = config.use_env_variable ? new _sequelize["default"](process.env[config.use_env_variable], config) : new _sequelize["default"](config.database, config.username, config.password, config); // Import the models
 
 exports.sequelize = sequelize;

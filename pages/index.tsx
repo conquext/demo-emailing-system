@@ -1,22 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from 'react'
 import { NextPage } from 'next'
 import { motion } from 'framer-motion'
 import XLSX from 'xlsx'
-import matchSorter from 'match-sorter'
 import { ToastContainer, toast } from 'react-toastify'
-
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import styled from 'styled-components'
 import { FiMoreHorizontal } from 'react-icons/fi'
 import { FaCloudUploadAlt } from 'react-icons/fa'
 import { SiMinutemailer } from 'react-icons/si'
 import { MdMore, MdDelete } from 'react-icons/md'
 import Layout from '@components/layout/Layout'
-import TableComponent, { useAsyncDebounce } from '@components/Table'
-import makeData from '@utils/helpers'
+import TableComponent, {
+  matchSorter,
+  useAsyncDebounce,
+} from '@components/Table'
+import makeData, { isEmpty } from '@utils/helpers'
 import Checkbox from '@components/Checkbox'
 import Dropdown from '@components/Dropdown'
 import Button from '@components/Button'
 import UploadComponent from '@components/FileUpload'
-import { getUsers, inviteUser } from '@utils/api'
+import { deleteUser, getUsers, inviteUser } from '@utils/api'
 
 const editableFields = ['firstName', 'lastName', 'email']
 
@@ -84,7 +89,7 @@ function GlobalFilter({
   }, 200)
 
   return (
-    <span>
+    <span className="mr-4 text-xl">
       Search:{' '}
       <input
         value={value || ''}
@@ -92,6 +97,7 @@ function GlobalFilter({
           setValue(e.target.value)
           onChange(e.target.value)
         }}
+        className="w-2/5 px-4 py-1 radius-input"
         placeholder={`${count} records...`}
         style={{
           fontSize: '1.1rem',
@@ -119,13 +125,9 @@ function DefaultColumnFilter({
   )
 }
 
-const sendInvite = (e, data) => {
-  e.stopPropagation()
-  inviteUser(data)
-}
-
 const IndexPage: NextPage = () => {
   const [data, setData] = useState([])
+  const [pageLoading, setPageLoading] = useState(false)
   // const [data, setData] = useState(() => makeData(6))
   const columns = useMemo(
     () => [
@@ -194,10 +196,26 @@ const IndexPage: NextPage = () => {
     []
   )
 
+  const sendInvite = async (e, xdata) => {
+    e.stopPropagation()
+    const resp: any = await inviteUser([data])
+    if (resp) {
+      const currentData = data.map((d) => {
+        if (d.email === xdata.email) d.inviteSent = 'Yes'
+        return d
+      })
+      setData(currentData)
+    }
+  }
+
   const getAndSetUsers = async () => {
-    const users = await getUsers()
-    // if (users) setData(users)
-    console.log('usersss', users)
+    setPageLoading(true)
+    const dataX = (await getUsers()) as any
+    const data = dataX?.data as unknown[]
+    if (!isEmpty(data)) {
+      setData(Array.from(data))
+    }
+    setPageLoading(false)
   }
   useEffect(() => {
     getAndSetUsers()
@@ -259,8 +277,9 @@ const IndexPage: NextPage = () => {
     }
   }
 
-  const deleteRecord = (row) => {
+  const deleteRecord = async (row) => {
     const newData = data.filter((d) => d.email !== row.original.email)
+    await deleteUser(row.original)
     setData(newData)
   }
 
@@ -273,18 +292,19 @@ const IndexPage: NextPage = () => {
     []
   )
 
-  const renderTableSelect = (hooks) => {
+  const renderTableHooks = (hooks) => {
     hooks.visibleColumns.push((columns) => [
       // Let's make a column for selection
       {
         id: 'selection',
         // The header can use the table's getToggleAllRowsSelectedProps method
         // to render a checkbox
-        Header: ({ getToggleAllPageRowsSelectedProps }) => (
-          <div>
-            <Checkbox {...getToggleAllPageRowsSelectedProps()} />
-          </div>
-        ),
+        Header: ({ getToggleAllPageRowsSelectedProps }) =>
+          !isEmpty(data) && (
+            <div>
+              <Checkbox {...getToggleAllPageRowsSelectedProps()} />
+            </div>
+          ),
         // The cell can use the individual row's getToggleRowSelectedProps method
         // to the render a checkbox
         Cell: ({ row }) => (
@@ -321,6 +341,7 @@ const IndexPage: NextPage = () => {
     const header = column.render('Header')
     return <>{header}</>
   }
+
   const renderTableRow = (page, prepareRow) => {
     const renderTableCell = (cell) => {
       if (cell.column.id === 'inviteSent') {
@@ -436,7 +457,100 @@ const IndexPage: NextPage = () => {
             </motion.tr>
           )
         })}
+        {/* <tr>
+          <td
+            className="w-full text-right"
+            // colSpan={visibleColumns.length}
+            style={{
+              textAlign: 'left',
+            }}
+          >
+            <Button type="primary">Add new data</Button>
+          </td>
+        </tr> */}
       </>
+    )
+  }
+
+  const renderExtraTableTd = (controls, formikProps) => {
+    const { visibleColumns } = controls
+    const {
+      values,
+      errors,
+      touched,
+      handleChange,
+      handleBlur,
+      isSubmitting,
+    } = formikProps
+    return (
+      <tr role="row" className="h-16 elevation-3">
+        <td role="cell" className="text-center">
+          &nbsp;
+        </td>
+        <td role="cell" className="text-right">
+          <div className="flex flex-col items-start">
+            <input
+              value={values.fName}
+              name="fName"
+              id="fName"
+              placeholder={'First Name'}
+              className="h-8 px-2 radius-input hover:border-primary"
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+            <span>
+              {errors.fName && touched.fName && (
+                <p className="text-xs text-left text-red-600">{errors.fName}</p>
+              )}
+            </span>
+          </div>
+        </td>
+        <td role="cell" className="text-right">
+          <div className="flex flex-col items-start">
+            <input
+              value={values.lName}
+              name="lName"
+              id="lName"
+              placeholder={'Last Name'}
+              className="h-8 px-2 radius-input hover:border-primary"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <span>
+              {errors.lName && touched.lName && (
+                <p className="text-xs text-left text-red-600">{errors.lName}</p>
+              )}
+            </span>
+          </div>
+        </td>
+        <td role="cell" className="text-right" placeholder={'Last Name'}>
+          <div className="flex flex-col items-start">
+            <input
+              value={values.email}
+              id="email"
+              name="email"
+              placeholder={'Email'}
+              className="h-8 px-2 radius-input hover:border-primary"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <span>
+              {errors.email && touched.email && (
+                <p className="text-xs text-left text-red-600">{errors.email}</p>
+              )}
+            </span>
+          </div>
+        </td>
+        <td
+          role="cell"
+          className="w-full text-right"
+          colSpan={visibleColumns.length - 4}
+        >
+          <Button type="primary" htmlFor="submit" disabled={isSubmitting}>
+            Add new
+          </Button>
+        </td>
+      </tr>
     )
   }
 
@@ -478,6 +592,7 @@ const IndexPage: NextPage = () => {
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
               ]}
               // autoUpload={true}
+              // render={(el: HTMLElement | null) => {
               render={(el: HTMLElement | null) => {
                 return (
                   <span
@@ -511,35 +626,154 @@ const IndexPage: NextPage = () => {
     )
   }
 
+  const handleFormSubmit = async (data, cb) => {
+    const payload: {
+      firstName?: string
+      lastName?: string
+      email?: string
+      inviteSent?: string
+      testSent?: string
+      testStatus?: string
+    } = {}
+    payload.firstName = data.fName
+    payload.lastName = data.lName
+    payload.email = data.email
+    payload.inviteSent = 'No'
+    payload.testSent = 'No'
+    payload.testStatus = 'NA'
+
+    const resp: any = await inviteUser([payload])
+    if (resp) {
+      cb.resetForm()
+      setData(resp.data)
+    }
+  }
+
+  const tableWrapper = styled.form`
+    table {
+      /* border-spacing: 0; */
+      /* border: 1px solid black; */
+      border-collapse: separate;
+      border-style: 1em;
+      border-spacing: 1em;
+      /* border-spacing: 0 1em; */
+
+      thead tr {
+        :nth-child(1) {
+          display: none;
+        }
+        /* border: none !important; */
+        /* border-bottom: 2px solid; */
+        background: none !important;
+        border-radius: none !important;
+      }
+
+      tbody {
+        tr {
+          border-radius: 1rem;
+          padding: 1.5rem;
+
+          margin: 0.5rem 0;
+          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.57),
+            0 2px 4px rgba(0, 0, 0, 0.05);
+          transition: transform 0.5s -webkit-transform 0.5s;
+          :last-child {
+            border-radius: 1rem;
+            td {
+              /* border-bottom: 0; */
+            }
+          }
+        }
+      }
+
+      th,
+      td {
+        margin: 0;
+        padding: 0.5rem;
+        /* border-bottom: 1px solid black;
+      border-right: 1px solid black; */
+
+        :last-child {
+          border-right: 0;
+        }
+
+        /* input {
+        font-size: 1rem;
+        padding: 0;
+        margin: 0;
+        border: 0;
+      } */
+      }
+
+      .pagination {
+        padding: 0.5rem;
+      }
+    }
+  `
+
   return (
     <Layout
       title="Your Awesome App"
-      className="container max-w-5xl py-8 overflow-auto"
+      className="container max-w-6xl py-8 overflow-auto"
       header={headerSearch()}
     >
       {/* <ToastContainer /> */}
 
       {/* <h1 className="mb-4 text-3xl font-black dark:text-gray-100">Welcome</h1> */}
-      <p className="mb-4 text-lg font-light">
+      <p className="mb-4 text-lg font-bolder">
         Demo spreadsheet upload and email list system.
       </p>
       <div>
-        <TableComponent
-          columns={columns}
-          data={data}
-          setData={setData}
-          tableClassName="w-full"
-          filterTypes={filterTypes}
-          defaultColumn={defaultColumn}
-          globalFilter={{ use: false, Component: GlobalFilter }}
-          renderHeader={renderTableHeader}
-          // renderFilter= {(column: unknown) => JSX.Element}
-          // renderTableBody={renderTableBody}
-          renderTableRow={renderTableRow}
-          // renderTableCell= {(cell: unknown) => JSX.Element}
-          handleTableControls={{ jsx: handleBatchActions }}
-          customHook={renderTableSelect}
-        />
+        <Formik
+          initialValues={{ fName: '', lName: '', email: '' }}
+          onSubmit={handleFormSubmit}
+          validateOnMount={false}
+          validationSchema={Yup.object({
+            fName: Yup.string()
+              .min(3, 'Must contain 3 characters or more')
+              .required('First Name is required'),
+            lName: Yup.string()
+              .min(3, 'Must contain 3 characters or more')
+              .required('Last Name is required'),
+            email: Yup.string()
+              .email('Invalid email address')
+              .required('Please provide the email'),
+          })}
+        >
+          {(formikProps) => (
+            <TableComponent
+              columns={columns}
+              data={data}
+              setData={setData}
+              tableClassName="w-full"
+              filterTypes={filterTypes}
+              defaultColumn={defaultColumn}
+              globalFilter={{
+                use: true,
+                Component: GlobalFilter,
+                pos: 'below',
+              }}
+              renderHeader={renderTableHeader}
+              // renderFilter= {(column: unknown) => JSX.Element}
+              // renderTableBody={renderTableBody}
+              renderTableRow={renderTableRow}
+              renderExtraTableTd={(controls) =>
+                renderExtraTableTd(controls, formikProps)
+              }
+              loading={pageLoading}
+              // renderTableCell= {(cell: unknown) => JSX.Element}
+              handleTableControls={{ jsx: handleBatchActions }}
+              tableWrapper={{
+                use: true,
+                wrapper: tableWrapper,
+                props: {
+                  onSubmit: formikProps.handleSubmit,
+                },
+              }}
+              customHook={renderTableHooks}
+            />
+          )}
+        </Formik>
       </div>
     </Layout>
   )

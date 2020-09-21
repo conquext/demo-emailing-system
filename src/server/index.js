@@ -21,7 +21,7 @@ const { errorResponse, successResponse } = Response
 
 // Set Environment
 const dev = process.env.NODE_ENV || 'development'
-const PORT = process.env.PORT || 3002
+const PORT = process.env.PORT || 3003
 const isDev = String(dev).includes('dev')
 
 // Next App
@@ -65,10 +65,9 @@ app
     server.use(bodyParser.urlencoded({ extended: true }))
     server.use(bodyParser.json())
 
-    server.get('/staffs', (req, res) => {
+    server.get('/staffs', async (req, res) => {
       try {
-        const staff = StaffUtils.findAllStaff()
-        console.log('them staff', staff)
+        const staff = await StaffUtils.findAllStaff()
         return successResponse(res, 200, 'All Staff members', staff)
       } catch (error) {
         return errorResponse(res, 500, error)
@@ -80,62 +79,62 @@ app
         const { email } = req.params
         const staff = await StaffUtils.findStaff('email', email)
         if (staff) {
-          await Staff.destroy({
-            where: { email },
-            cascase: true,
-          })
+          await StaffUtils.removeStaff('email', email)
         } else {
           return errorResponse(res, 404, 'Staff not found')
         }
-        const updates = StaffUtils.findAllStaff()
+        const updates = await StaffUtils.findAllStaff()
         return successResponse(res, 200, 'All Staff members', updates)
       } catch (error) {
         return errorResponse(res, 500, error)
       }
     })
 
-    server.post('/sendinvite', (req, res) => {
+    server.post('/sendinvite', async (req, res) => {
       try {
         let token = 'rerteESDew432f'
-        console.log('reqss', req.body)
-        const data = StaffUtils.getAllReqBody(req.body)
-        data &&
-          data.forEach(async (d) => {
+        const data = await StaffUtils.getAllReqBody(req.body)
+        if (data) {
+          for (const d of data) {
             try {
               // check that it is not in db and not already invited
               // add user to database and send email
               // update user invite status
               const userFound = await StaffUtils.findStaff('email', d.email)
-              console.log('userFound', userFound)
               if (userFound) {
                 const isInvited = userFound.inviteSent === 'Yes'
                 if (!isInvited) {
                   const emailSent = await sendEmail(userFound, token)
                   if (emailSent || emailSent === 'sent')
-                    StaffUtils.updateStaff(userFound.email, {
+                    await StaffUtils.updateStaff(userFound.email, {
                       inviteSent: 'Yes',
                     })
                 }
               } else {
                 const newUser = await StaffUtils.createStaff(d)
                 if (newUser && newUser.email) {
-                  const emailSent = await sendEmail(newUser, token)
+                  const emailSent = await sendEmail(
+                    { email: 'a.rasheedalabi@gmail.com' },
+                    token
+                  )
                   if (!emailSent || emailSent === 'fail')
-                    StaffUtils.updateStaff(newUser.email, { inviteSent: 'No' })
+                    await StaffUtils.updateStaff(newUser.email, {
+                      inviteSent: 'No',
+                    })
                 }
               }
             } catch (error) {
               console.log('problems with user', error)
             }
-          })
-        const updates = StaffUtils.findAllStaff()
+          }
+        }
+        const updates = await StaffUtils.findAllStaff()
         return successResponse(res, 201, 'Invites Sent', updates)
       } catch (error) {
         return errorResponse(res, 500, error)
       }
     })
 
-    // server.use('/api', (req, res) => res.json('yo welcome'))
     server.use(apiRoutes)
 
     // Use React application on server
@@ -158,14 +157,6 @@ app
       if (err) throw err
       console.log(`> Ready on ${PORT}`)
     })
-
-    // Connect to DB
-    // models.sequelize.sync().then(function () {
-    //   server.listen(PORT, (err) => {
-    //     if (err) throw err
-    //     console.log(`> Ready on ${PORT}`)
-    //   })
-    // })
   })
   .catch((ex) => {
     // Exit if there is an exception

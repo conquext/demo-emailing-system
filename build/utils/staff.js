@@ -5,9 +5,11 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports["default"] = exports.fieldNames = void 0;
 
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -16,8 +18,6 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _index = _interopRequireDefault(require("../models/index"));
 
@@ -37,17 +37,19 @@ var properCase = function properCase(str) {
   return str;
 };
 
+var fieldNames = ['Serial No', 'firstName', 'lastName', 'email', 'inviteSent', 'testSent', 'testStatus'];
+exports.fieldNames = fieldNames;
+
 var StaffUtils = /*#__PURE__*/function () {
   function StaffUtils() {
     (0, _classCallCheck2["default"])(this, StaffUtils);
-    (0, _defineProperty2["default"])(this, "fieldNames", ['Serial No', 'firstName', 'lastName', 'email', 'inviteSent', 'testSent', 'testStatus']);
   }
 
   (0, _createClass2["default"])(StaffUtils, null, [{
     key: "getRequestBody",
     value: function getRequestBody(body) {
       var dataObj = {};
-      this.fieldNames.forEach(function (field) {
+      fieldNames.forEach(function (field) {
         var _body$field;
 
         dataObj[field] = ((_body$field = body[field]) === null || _body$field === void 0 ? void 0 : _body$field.toLowerCase()) === 'na' ? properCase(body[field]) : 'NA';
@@ -57,21 +59,17 @@ var StaffUtils = /*#__PURE__*/function () {
   }, {
     key: "getAllReqBody",
     value: function getAllReqBody(body) {
-      var _this = this;
-
-      var data = [];
+      var xdata = [];
       Array.from(body).forEach(function (data) {
         var dataObj = {};
-
-        _this.fieldNames.forEach(function (field) {
+        fieldNames.forEach(function (field) {
           var _data$field;
 
           dataObj[field] = ((_data$field = data[field]) === null || _data$field === void 0 ? void 0 : _data$field.toLowerCase()) === 'na' ? properCase(data[field]) : 'NA';
         });
-
-        data.push(dataObj);
+        xdata.push(dataObj);
       });
-      return data;
+      return xdata;
     }
   }, {
     key: "createStaff",
@@ -333,7 +331,7 @@ var StaffUtils = /*#__PURE__*/function () {
             switch (_context6.prev = _context6.next) {
               case 0:
                 data = {};
-                acceptedFields = this.fieldNames;
+                acceptedFields = fieldNames;
                 if (withoutId) acceptedFields = acceptedFields.filter(function (field) {
                   return field !== 'id';
                 });
@@ -353,7 +351,7 @@ var StaffUtils = /*#__PURE__*/function () {
                 return _context6.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee6);
       }));
 
       function getStaffField(_x9, _x10) {

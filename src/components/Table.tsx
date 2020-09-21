@@ -12,6 +12,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import matchSorter from 'match-sorter'
 import styled from 'styled-components'
+import { isEmpty } from '@utils/helpers'
 
 export interface Props {
   className?: string | Record<string, unknown>
@@ -61,6 +62,7 @@ export type DefaultColumn = {
 
 export type GlobalFilter = {
   use: boolean
+  pos: 'below' | 'above'
   Component: ({
     preGlobalFilteredRows,
     globalFilter,
@@ -77,6 +79,7 @@ export interface TableOptions {
   renderFilter?: (column: unknown) => JSX.Element
   renderTableBody?: (column: unknown) => JSX.Element
   renderTableRow?: (row: unknown, prepareTableRow: unknown) => JSX.Element
+  renderExtraTableTd?: (controls: unknown) => JSX.Element
   renderTableCell?: (cell: unknown) => JSX.Element
   handleTableControls?: {
     beforeTableRender?: (controls: unknown) => JSX.Element
@@ -152,7 +155,9 @@ function TableComponent({
   columns,
   data,
   setData,
+  loading,
   tableClassName,
+  tableWrapper,
   ...rest
 }: {
   columns: {
@@ -164,6 +169,12 @@ function TableComponent({
     }[]
   }[]
   data: Record<string, unknown> | unknown[]
+  loading?: boolean
+  tableWrapper?: {
+    use: boolean
+    wrapper: unknown
+    props?: Record<string, unknown>
+  }
   setData: React.Dispatch<unknown>
 } & TableOptions) {
   const [skipPageReset, setSkipPageReset] = useState(false)
@@ -204,6 +215,7 @@ function TableComponent({
     'renderFilter',
     'renderTableBody',
     'renderTableRow',
+    'renderExtraTableTd',
     'renderTableCell',
     'defaultColumn',
     'globalFilter',
@@ -215,17 +227,23 @@ function TableComponent({
     }
   })
 
+  let TableWrapper = Styles
+  if (tableWrapper.use) {
+    TableWrapper = tableWrapper.wrapper
+  }
+
   return (
-    <Styles>
+    <TableWrapper {...(tableWrapper.use && { ...tableWrapper.props })}>
       <Table
         tableClassName={tableClassName}
         columns={columns}
+        loading={loading}
         data={data}
         updateData={updateData}
         skipPageReset={skipPageReset}
         options={{ ...tableOptions }}
       />
-    </Styles>
+    </TableWrapper>
   )
 }
 
@@ -237,6 +255,7 @@ function Table({
   data,
   updateData,
   skipPageReset,
+  loading,
   options,
   tableClassName,
 }) {
@@ -248,6 +267,7 @@ function Table({
     renderFilter,
     // renderTableBody,
     renderTableRow,
+    renderExtraTableTd,
     renderTableCell,
     handleTableControls,
     customHook,
@@ -352,6 +372,25 @@ function Table({
         handleTableControls.jsx(controls)}
       <table {...getTableProps()} className={tableClassName || ''}>
         <thead>
+          {globalFilter?.use &&
+            globalFilter?.pos === 'above' &&
+            data.length > 10 && (
+              <tr>
+                <th
+                  colSpan={visibleColumns.length}
+                  style={{
+                    textAlign: 'left',
+                  }}
+                >
+                  {/* @ts-ignore */}
+                  <globalFilter.Component
+                    preGlobalFilteredRows={preGlobalFilteredRows}
+                    globalFilter={state.globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                  />
+                </th>
+              </tr>
+            )}
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -388,20 +427,43 @@ function Table({
               ))}
             </tr>
           ))}
-          {globalFilter?.use && (
+          {globalFilter?.use &&
+            globalFilter?.pos === 'below' &&
+            data.length > 10 && (
+              <tr>
+                <th
+                  colSpan={visibleColumns.length}
+                  style={{
+                    textAlign: 'left',
+                  }}
+                >
+                  {/* @ts-ignore */}
+                  <globalFilter.Component
+                    preGlobalFilteredRows={preGlobalFilteredRows}
+                    globalFilter={state.globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                  />
+                </th>
+              </tr>
+            )}
+          {isEmpty(data) && (
             <tr>
               <th
                 colSpan={visibleColumns.length}
+                className="w-full h-48 my-4 text-base text-center hover:border-red-600 nothing-to-show-th"
                 style={{
-                  textAlign: 'left',
+                  fontWeight: 'normal',
+                  textAlign: 'center',
+                  border: '1px dashed darkgreen',
                 }}
               >
-                {/* @ts-ignore */}
-                <globalFilter.Component
-                  preGlobalFilteredRows={preGlobalFilteredRows}
-                  globalFilter={state.globalFilter}
-                  setGlobalFilter={setGlobalFilter}
-                />
+                {loading ? (
+                  <div className="spinner"></div>
+                ) : (
+                  <p className="text-xl text-red-800 font-base">
+                    Nothing to show
+                  </p>
+                )}
               </th>
             </tr>
           )}
@@ -436,38 +498,43 @@ function Table({
                   )
                 })}
           </AnimatePresence>
+          {renderExtraTableTd && renderExtraTableTd(controls)}
         </tbody>
       </table>
       <div className="mt-2 pagination">
-        <button
-          onClick={() => gotoPage(0)}
-          className={`${!canPreviousPage ? 'opacity-25' : ''}`}
-          disabled={!canPreviousPage}
-        >
-          {'<<'}
-        </button>{' '}
-        <button
-          onClick={() => previousPage()}
-          className={`${!canPreviousPage ? 'opacity-25' : ''}`}
-          disabled={!canPreviousPage}
-        >
-          {'<'}
-        </button>{' '}
-        <button
-          onClick={() => nextPage()}
-          disabled={!canNextPage}
-          className={`${!canNextPage ? 'opacity-25' : ''}`}
-        >
-          {'>'}
-        </button>{' '}
-        <button
-          onClick={() => gotoPage(pageCount - 1)}
-          disabled={!canNextPage}
-          className={`${!canNextPage ? 'opacity-25' : ''}`}
-        >
-          {'>>'}
-        </button>{' '}
-        {pageOptions?.length > 1 && (
+        {data.length > 10 && (
+          <>
+            <button
+              onClick={() => gotoPage(0)}
+              className={`${!canPreviousPage ? 'opacity-25' : ''}`}
+              disabled={!canPreviousPage}
+            >
+              {'<<'}
+            </button>{' '}
+            <button
+              onClick={() => previousPage()}
+              className={`${!canPreviousPage ? 'opacity-25' : ''}`}
+              disabled={!canPreviousPage}
+            >
+              {'<'}
+            </button>{' '}
+            <button
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+              className={`${!canNextPage ? 'opacity-25' : ''}`}
+            >
+              {'>'}
+            </button>{' '}
+            <button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+              className={`${!canNextPage ? 'opacity-25' : ''}`}
+            >
+              {'>>'}
+            </button>
+          </>
+        )}
+        {data?.length > 10 && (
           <>
             <span className="text-sm">
               Page{' '}
@@ -489,21 +556,22 @@ function Table({
                 }}
               />
             </span>
+
+            <select
+              value={pageSize}
+              className="px-2 mx-4 text-sm"
+              onChange={(e) => {
+                setPageSize(Number(e.target.value))
+              }}
+            >
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
           </>
         )}
-        <select
-          value={pageSize}
-          className="px-2 mx-4 text-sm"
-          onChange={(e) => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
       </div>
     </>
   )

@@ -1,23 +1,13 @@
-"use strict";
+require('dotenv').config();
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _dotenv = _interopRequireDefault(require("dotenv"));
-
-_dotenv["default"].config();
-
-var _default = {
+module.exports = {
   development: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: 'postgres'
+    dialect: 'postgres',
+    use_env_variable: 'DB_URL'
   },
   test: {
     username: process.env.DB_USERNAME_TEST,
@@ -28,7 +18,6 @@ var _default = {
     operatorsAliases: false
   },
   production: {
-    use_env_variable: 'DATABASE_URL'
+    use_env_variable: 'DB_URL'
   }
 };
-exports["default"] = _default;

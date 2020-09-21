@@ -1,33 +1,7 @@
 import Sequelize from 'sequelize'
 import fs from 'fs'
 import path from 'path'
-// import cf from '../config/config.js'
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import dotenv from 'dotenv'
-dotenv.config()
-
-const cf = {
-  development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    use_env_variable: 'DB_URL',
-  },
-  test: {
-    username: process.env.DB_USERNAME_TEST,
-    password: process.env.DB_PASSWORD_TEST,
-    database: process.env.DB_TEST_NAME_TEST,
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    operatorsAliases: false,
-  },
-  production: {
-    use_env_variable: 'DB_URL',
-  },
-}
+import cf from '../config/config.js'
 
 const basename = path.basename(__filename)
 const db = {}

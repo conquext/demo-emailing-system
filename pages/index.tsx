@@ -204,6 +204,7 @@ const IndexPage: NextPage = () => {
         if (d.email === xdata.email) d.inviteSent = 'Yes'
         return d
       })
+      toast.success('User invited successfully')
       setData(currentData)
     }
   }
@@ -280,6 +281,7 @@ const IndexPage: NextPage = () => {
   const deleteRecord = async (row) => {
     const newData = data.filter((d) => d.email !== row.original.email)
     await deleteUser(row.original)
+    toast.success('Deleted Successfully')
     setData(newData)
   }
 
@@ -645,6 +647,7 @@ const IndexPage: NextPage = () => {
     const resp: any = await inviteUser([payload])
     if (resp) {
       cb.resetForm()
+      toast.success('New data added')
       setData(resp.data)
     }
   }
@@ -717,7 +720,7 @@ const IndexPage: NextPage = () => {
       className="container max-w-6xl py-8 overflow-auto"
       header={headerSearch()}
     >
-      {/* <ToastContainer /> */}
+      <ToastContainer />
 
       {/* <h1 className="mb-4 text-3xl font-black dark:text-gray-100">Welcome</h1> */}
       <p className="mb-4 text-lg font-bolder">

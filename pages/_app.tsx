@@ -6,6 +6,7 @@ import NProgress from 'nprogress'
 
 import '@styles/main.css'
 import '@styles/nprogress.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())

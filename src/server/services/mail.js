@@ -15,7 +15,7 @@ const CLIENT_URL =
     : env.CLIENT_URL
 
 sgMail.setApiKey(apiKey)
-const expiry = parseInt(env.TOKENEXPIRY / 60 / 60) || 3
+const expiry = (env.TOKEN_EXPIRY || 1000000) / 60 / 60
 
 const smtpTransport = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -29,8 +29,6 @@ const smtpTransport = nodemailer.createTransport({
     refreshToken: env.GMAIL_REFRESH,
   },
 })
-
-const expiry = (env.TOKEN_EXPIRY || 1000000) / 60 / 60
 
 export const sendEmailWithNodemailer = async (user, token, html) => {
   const mailOptions = {

@@ -33,6 +33,67 @@ const headerSearch = () => {
   )
 }
 
+const tableWrapper = styled.form`
+  table {
+    /* border-spacing: 0; */
+    /* border: 1px solid black; */
+    border-collapse: separate;
+    border-style: 1em;
+    border-spacing: 1em;
+    /* border-spacing: 0 1em; */
+
+    thead tr {
+      :nth-child(1) {
+        display: none;
+      }
+      /* border: none !important; */
+      /* border-bottom: 2px solid; */
+      background: none !important;
+      border-radius: none !important;
+    }
+
+    tbody {
+      tr {
+        border-radius: 1rem;
+        padding: 1.5rem;
+
+        margin: 0.5rem 0;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.57), 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: transform 0.5s -webkit-transform 0.5s;
+        :last-child {
+          border-radius: 1rem;
+          td {
+            /* border-bottom: 0; */
+          }
+        }
+      }
+    }
+
+    th,
+    td {
+      margin: 0;
+      padding: 0.5rem;
+      /* border-bottom: 1px solid black;
+      border-right: 1px solid black; */
+
+      :last-child {
+        border-right: 0;
+      }
+
+      /* input {
+        font-size: 1rem;
+        padding: 0;
+        margin: 0;
+        border: 0;
+      } */
+    }
+
+    .pagination {
+      padding: 0.5rem;
+    }
+  }
+`
+
 function fuzzyTextFilterFn(rows, id, filterValue) {
   return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] })
 }
@@ -651,68 +712,6 @@ const IndexPage: NextPage = () => {
       setData(resp.data)
     }
   }
-
-  const tableWrapper = styled.form`
-    table {
-      /* border-spacing: 0; */
-      /* border: 1px solid black; */
-      border-collapse: separate;
-      border-style: 1em;
-      border-spacing: 1em;
-      /* border-spacing: 0 1em; */
-
-      thead tr {
-        :nth-child(1) {
-          display: none;
-        }
-        /* border: none !important; */
-        /* border-bottom: 2px solid; */
-        background: none !important;
-        border-radius: none !important;
-      }
-
-      tbody {
-        tr {
-          border-radius: 1rem;
-          padding: 1.5rem;
-
-          margin: 0.5rem 0;
-          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.57),
-            0 2px 4px rgba(0, 0, 0, 0.05);
-          transition: transform 0.5s -webkit-transform 0.5s;
-          :last-child {
-            border-radius: 1rem;
-            td {
-              /* border-bottom: 0; */
-            }
-          }
-        }
-      }
-
-      th,
-      td {
-        margin: 0;
-        padding: 0.5rem;
-        /* border-bottom: 1px solid black;
-      border-right: 1px solid black; */
-
-        :last-child {
-          border-right: 0;
-        }
-
-        /* input {
-        font-size: 1rem;
-        padding: 0;
-        margin: 0;
-        border: 0;
-      } */
-      }
-
-      .pagination {
-        padding: 0.5rem;
-      }
-    }
-  `
 
   return (
     <Layout

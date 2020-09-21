@@ -1,20 +1,30 @@
 {
-  "name": "next-with-tailwindcss",
+  "name": "demo-emailing-system",
   "version": "1.0.0",
-  "description": "NextJS with Tailwind CSS",
+  "description": "NextJS & Typescript with Tailwind CSS, running on Node backend",
   "scripts": {
     "dev": "next",
-    "build": "next build",
-    "start": "next start",
-    "serve:build": "rm -rf ./build && mkdir build && babel src/server --out-dir build",
-    "serve": "node ./build/inde.js",
+    "build2": "next build",
+    "start2": "next start",
+    "build": "rm -rf ./build && mkdir build && babel ./src/server --out-dir build",
+    "start": "node ./build/index.js",
     "serve:dev": "nodemon --exec babel-node src/server/index.js --port 3003",
     "test": "npm run test:format && npm run test:lint && npm run test:unit",
     "test:unit": "jest",
     "test:unit:watch": "jest --watch",
     "test:format": "prettier --check .",
     "test:tsc": "tsc --noEmit",
-    "test:lint": "eslint './src/**/*' --ext .tsx,.ts"
+    "test:lint": "eslint './src/**/*' --ext .tsx,.ts",
+    "heroku-postbuild": "npm run undo:prod && npm run migrate:prod",
+    "start:dev": "nodemon --exec babel-node -- src/server/index.js",
+    "migrate:dev": "sequelize db:migrate",
+    "migrate:test": "cross-env NODE_ENV=test sequelize db:migrate",
+    "migrate:prod": "cross-env NODE_ENV=production sequelize db:migrate && sequelize db:seed:all",
+    "undo:dev": "sequelize db:migrate:undo:all",
+    "undo:test": "cross-env NODE_ENV=test sequelize db:migrate:undo:all",
+    "seed:dev": "sequelize db:seed:all",
+    "seed:test": "cross-env NODE_ENV=test sequelize db:seed:all",
+    "undo:seed": "NODE_ENV=development npx sequelize-cli db:seed:undo:all"
   },
   "husky": {
     "hooks": {

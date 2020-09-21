@@ -113,5 +113,6 @@
     "tailwindcss-spinner": "^1.2.0",
     "typescript": "^3.9.3"
   },
-  "proxy": "http://localhost:3002"
+  "proxy": "http://localhost:3002",
+  "type": "module"
 }

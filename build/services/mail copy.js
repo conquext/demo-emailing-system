@@ -34,14 +34,15 @@ _mail["default"].setApiKey(apiKey);
 var expiry = (env.TOKEN_EXPIRY || 1000000) / 60 / 60;
 
 var smtpTransport = _nodemailer["default"].createTransport({
-  host: 'smtp.mailtrap.io',
-  port: 2525,
+  host: 'smtp.gmail.com',
+  port: 465,
   secure: true,
   auth: {
-    user: 'a375674a48cd26',
-    pass: '7529e22f37e05d',
-    debug: true,
-    logger: true
+    type: 'OAuth2',
+    user: env.EMAIL,
+    clientId: env.GMAIL_ID,
+    clientSecret: env.GMAIL_SECRET,
+    refreshToken: env.GMAIL_REFRESH
   }
 }); // export const sendEmailWithNodemailer = async (user, token, html) => {
 

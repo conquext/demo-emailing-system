@@ -7,7 +7,7 @@ To reduce the CSS bundle size of TailwindCSS, I added [PurgeCSS](https://www.pur
 ## Development
 
 1. `npm install`
-2. `npm run dev`
+2. `npm run serve:dev`
 
 ## Testing
 
@@ -15,5 +15,4 @@ To reduce the CSS bundle size of TailwindCSS, I added [PurgeCSS](https://www.pur
 
 ## Production
 
-1. `npm run build`
-2. `npm run start`
+1. `npm run start`

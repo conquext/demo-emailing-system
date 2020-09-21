@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer'
 import sgMail from '@sendgrid/mail'
 import dotenv from 'dotenv'
 import Debug from 'debug'
+import composeMail from './mailtemplate'
 
 dotenv.config()
 
@@ -30,12 +31,13 @@ const smtpTransport = nodemailer.createTransport({
   },
 })
 
-export const sendEmailWithNodemailer = async (user, token, html) => {
+// export const sendEmailWithNodemailer = async (user, token, html) => {
+export const sendEmail = async (user, token, html) => {
   const mailOptions = {
     from: env.EMAIL,
     to: user.email,
     subject: 'Test Email',
-    html: html || getMessage(user, token),
+    html: html || composeMail() || getMessage(user, token),
   }
   try {
     await smtpTransport.sendMail(mailOptions, (info) => {
@@ -48,19 +50,21 @@ export const sendEmailWithNodemailer = async (user, token, html) => {
   }
 }
 
-const sendEmail = async (user, token, html) => {
+const sendEmail2 = async (user, token, html) => {
   try {
     const msg = {
       to: user.email,
       from: 'intbusfor@gmail.com',
       subject: 'Test Email',
-      html: html ? html : getMessage(user, token),
+      html: html ? html : composeMail(),
     }
     const message = await sgMail.send(msg)
+    console.log('message delivered as', message)
     if (message[0] && message[0].request) {
       return 'sent'
     }
   } catch (error) {
+    console.log('message failed', error)
     return 'fail'
   }
 }
@@ -71,7 +75,7 @@ function getMessage(user, token) {
         <p>You received this mail because you are our friend or a random email happened to be yours.</p>
         <a href='${CLIENT_URL}/${token}/${user.email}'>Click this link now to Signup</a>
 
-        <p style={color: 'red'}>The link will expire in ${expiry}</p>
+        <p>The link will expire in ${expiry}</p>
         <br><br>
         <p>--Team</p>`
 }

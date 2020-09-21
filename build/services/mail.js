@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.sendEmailWithNodemailer = void 0;
+exports["default"] = exports.sendEmail = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -18,6 +18,8 @@ var _mail = _interopRequireDefault(require("@sendgrid/mail"));
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
 var _debug = _interopRequireDefault(require("debug"));
+
+var _mailtemplate = _interopRequireDefault(require("./mailtemplate"));
 
 _dotenv["default"].config();
 
@@ -42,9 +44,10 @@ var smtpTransport = _nodemailer["default"].createTransport({
     clientSecret: env.GMAIL_SECRET,
     refreshToken: env.GMAIL_REFRESH
   }
-});
+}); // export const sendEmailWithNodemailer = async (user, token, html) => {
 
-var sendEmailWithNodemailer = /*#__PURE__*/function () {
+
+var sendEmail = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(user, token, html) {
     var mailOptions;
     return _regenerator["default"].wrap(function _callee$(_context) {
@@ -55,7 +58,7 @@ var sendEmailWithNodemailer = /*#__PURE__*/function () {
               from: env.EMAIL,
               to: user.email,
               subject: 'Test Email',
-              html: html || getMessage(user, token)
+              html: html || (0, _mailtemplate["default"])() || getMessage(user, token)
             };
             _context.prev = 1;
             _context.next = 4;
@@ -80,14 +83,14 @@ var sendEmailWithNodemailer = /*#__PURE__*/function () {
     }, _callee, null, [[1, 7]]);
   }));
 
-  return function sendEmailWithNodemailer(_x, _x2, _x3) {
+  return function sendEmail(_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
 }();
 
-exports.sendEmailWithNodemailer = sendEmailWithNodemailer;
+exports.sendEmail = sendEmail;
 
-var sendEmail = /*#__PURE__*/function () {
+var sendEmail2 = /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(user, token, html) {
     var msg, message;
     return _regenerator["default"].wrap(function _callee2$(_context2) {
@@ -99,45 +102,47 @@ var sendEmail = /*#__PURE__*/function () {
               to: user.email,
               from: 'intbusfor@gmail.com',
               subject: 'Test Email',
-              html: html ? html : getMessage(user, token)
+              html: html ? html : (0, _mailtemplate["default"])()
             };
             _context2.next = 4;
             return _mail["default"].send(msg);
 
           case 4:
             message = _context2.sent;
+            console.log('message delivered as', message);
 
             if (!(message[0] && message[0].request)) {
-              _context2.next = 7;
+              _context2.next = 8;
               break;
             }
 
             return _context2.abrupt("return", 'sent');
 
-          case 7:
-            _context2.next = 12;
+          case 8:
+            _context2.next = 14;
             break;
 
-          case 9:
-            _context2.prev = 9;
+          case 10:
+            _context2.prev = 10;
             _context2.t0 = _context2["catch"](0);
+            console.log('message failed', _context2.t0);
             return _context2.abrupt("return", 'fail');
 
-          case 12:
+          case 14:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 9]]);
+    }, _callee2, null, [[0, 10]]);
   }));
 
-  return function sendEmail(_x4, _x5, _x6) {
+  return function sendEmail2(_x4, _x5, _x6) {
     return _ref2.apply(this, arguments);
   };
 }();
 
 function getMessage(user, token) {
-  return "\n        <h3>This is just a test email.<h3> \n        <p>You received this mail because you are our friend or a random email happened to be yours.</p>\n        <a href='".concat(CLIENT_URL, "/").concat(token, "/").concat(user.email, "'>Click this link now to Signup</a>\n\n        <p style={color: 'red'}>The link will expire in ").concat(expiry, "</p>\n        <br><br>\n        <p>--Team</p>");
+  return "\n        <h3>This is just a test email.<h3> \n        <p>You received this mail because you are our friend or a random email happened to be yours.</p>\n        <a href='".concat(CLIENT_URL, "/").concat(token, "/").concat(user.email, "'>Click this link now to Signup</a>\n\n        <p>The link will expire in ").concat(expiry, "</p>\n        <br><br>\n        <p>--Team</p>");
 }
 
 var _default = sendEmail;

@@ -258,8 +258,8 @@ const IndexPage: NextPage = () => {
   )
 
   const sendInvite = async (e, xdata) => {
-    e.stopPropagation()
-    const resp: any = await inviteUser([data])
+    e.preventDefault()
+    const resp: any = await inviteUser([xdata])
     if (resp) {
       const currentData = data.map((d) => {
         if (d.email === xdata.email) d.inviteSent = 'Yes'
@@ -412,19 +412,22 @@ const IndexPage: NextPage = () => {
           return (
             <div className="z-50 inline-flex items-center justify-center w-full h-full align-middle group">
               <span className="text-red-600">{cell.render('Cell')}</span>
-              <span className="hidden align-middle group-focus:flex group-hover:flex align-center">
+              <span className="align-middle group-focus:flex group-hover:flex align-center">
                 <Dropdown
+                  className="z-20 hidden ml-4 group-hover:flex"
                   buttonLabel={
                     <FiMoreHorizontal className="flex self-center opacity-50" />
                   }
-                  className="z-20 ml-4"
                 >
                   <ul className="w-40 py-2 space-y-4 text-sm">
                     <li>
                       <span
                         className="cursor-pointer text-primary hover:underline"
                         title="components"
-                        onClick={(e) => sendInvite(e, cell.row.values)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          sendInvite(e, cell.row.values)
+                        }}
                       >
                         <SiMinutemailer className="inline ml-6 mr-4" />
                         Send Invite
@@ -639,7 +642,12 @@ const IndexPage: NextPage = () => {
             <p>You have selected {selectedLen} members</p>
             {uninvitedLen > 0 && (
               <div>
-                <Button onClick={(e) => sendInvite(e, uninvitedMembers)}>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    sendInvite(e, uninvitedMembers)
+                  }}
+                >
                   Send Invitation to {uninvitedLen} members
                 </Button>
               </div>
@@ -729,6 +737,7 @@ const IndexPage: NextPage = () => {
         <Formik
           initialValues={{ fName: '', lName: '', email: '' }}
           onSubmit={handleFormSubmit}
+          validateOnBlur={false}
           validateOnMount={false}
           validationSchema={Yup.object({
             fName: Yup.string()

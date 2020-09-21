@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import fs from 'fs'
 import path from 'path'
-import cf from '../config/config.mjs'
+import cf from '../config/config.js'
 
 const basename = path.basename(__filename)
 const db = {}

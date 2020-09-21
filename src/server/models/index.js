@@ -3,13 +3,14 @@
 import Sequelize from 'sequelize'
 import fs from 'fs'
 import path from 'path'
+import cf from '../config/config.js'
 
 const basename = path.basename(__filename)
 const db = {}
 
 const env = process.env.NODE_ENV || 'development'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const config = require(__dirname + '/../config/config.js')[env]
+
+const config = cf[env]
 
 const sequelize = config.use_env_variable
   ? new Sequelize(process.env[config.use_env_variable], config)

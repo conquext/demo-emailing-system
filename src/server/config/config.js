@@ -1,7 +1,7 @@
 import dotEnv from 'dotenv'
 dotEnv.config()
 
-module.exports = {
+export default {
   development: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,

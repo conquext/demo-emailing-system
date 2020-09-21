@@ -27,7 +27,7 @@
     "seed:test": "cross-env NODE_ENV=test sequelize db:seed:all",
     "undo:seed": "NODE_ENV=development npx sequelize-cli db:seed:undo:all"
   },
-  "husky": {
+  "husky-disabled": {
     "hooks": {
       "pre-commit": "npm run test:tsc && npm run test:lint",
       "pre-push": "npm run test"

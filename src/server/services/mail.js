@@ -10,6 +10,7 @@ const debug = new Debug('dev')
 const { env } = process
 
 const apiKey = env.SENDGRID_API_KEY
+
 const CLIENT_URL =
   env.NODE_ENV === 'test' || 'development'
     ? `http://localhost:${env.PORT}`
@@ -31,8 +32,8 @@ const smtpTransport = nodemailer.createTransport({
   },
 })
 
-// export const sendEmailWithNodemailer = async (user, token, html) => {
-export const sendEmail = async (user, token, html) => {
+export const sendEmailWithNodemailer = async (user, token, html) => {
+  // export const sendEmail = async (user, token, html) => {
   const mailOptions = {
     from: env.EMAIL,
     to: user.email,
@@ -50,7 +51,7 @@ export const sendEmail = async (user, token, html) => {
   }
 }
 
-const sendEmail2 = async (user, token, html) => {
+const sendEmail = async (user, token, html) => {
   try {
     const msg = {
       to: user.email,
@@ -59,7 +60,7 @@ const sendEmail2 = async (user, token, html) => {
       html: html ? html : composeMail(),
     }
     const message = await sgMail.send(msg)
-    console.log('message delivered as', message)
+
     if (message[0] && message[0].request) {
       return 'sent'
     }

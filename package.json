@@ -15,7 +15,7 @@
     "test:format": "prettier --check .",
     "test:tsc": "tsc --noEmit",
     "test:lint": "eslint './src/**/*' --ext .tsx,.ts",
-    "heroku-postbuild": "npm run undo:prod && npm run migrate:prod",
+    "heroku-postbuild-disable": "npm run undo:prod && npm run migrate:prod",
     "start:dev": "nodemon --exec babel-node -- src/server/index.js",
     "migrate:dev": "sequelize db:migrate",
     "migrate:test": "cross-env NODE_ENV=test sequelize db:migrate",

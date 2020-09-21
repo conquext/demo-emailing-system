@@ -1,57 +1,63 @@
-const staffs = (sequelize, DataTypes) => {
-  const Staff = sequelize.define('staff', {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var staffs = function staffs(sequelize, DataTypes) {
+  var Staff = sequelize.define('staff', {
     id: {
       type: DataTypes.INTEGER,
       unique: true,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
-
     email: {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
       validate: {
         notEmpty: true,
-        isEmail: true,
-      },
+        isEmail: true
+      }
     },
     inviteSent: {
       type: DataTypes.ENUM,
       defaultValue: 'Yes',
       allowNull: false,
-      values: ['No', 'Yes'],
+      values: ['No', 'Yes']
     },
     testSent: {
       type: DataTypes.ENUM,
       defaultValue: 'Yes',
       allowNull: false,
-      values: ['No', 'Yes'],
+      values: ['No', 'Yes']
     },
     testStatus: {
       type: DataTypes.ENUM,
       defaultValue: 'NA',
       allowNull: false,
-      values: ['Pending', 'Received', 'NA'],
+      values: ['Pending', 'Received', 'NA']
     },
     createdAt: {
       type: DataTypes.DATE,
-      defaultValue: new Date(),
+      defaultValue: new Date()
     },
     updatedAt: DataTypes.DATE,
-    deletedAt: DataTypes.DATE,
-  })
+    deletedAt: DataTypes.DATE
+  });
+  return Staff;
+};
 
-  return Staff
-}
-
-export default staffs
+var _default = staffs;
+exports["default"] = _default;

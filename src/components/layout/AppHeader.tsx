@@ -58,9 +58,9 @@ const AppHeader: React.FC<Props> = ({ className, children }) => {
         </p>
         <span
           className="box-content w-20 h-20 mr-4 transform scale-75 opacity-75 dark:opacity-100 dark:bg-nav-color bg-light-nav-color"
-          style={{
-            backgroundImage: `url('/assets/3-hex.svg')`,
-          }}
+          // style={{
+          //   backgroundImage: `url('/assets/3-hex.svg')`,
+          // }}
         ></span>
       </div>
       <div className="-mr-16">

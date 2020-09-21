@@ -1,8 +1,4 @@
-const withMDX = require('@next/mdx')({
-  extension: /\.(md|mdx)$/,
-})
-
-module.exports = withMDX({
+module.exports = {
   pageExtensions: ['ts', 'tsx', 'mdx'],
   target: 'server',
-})
+}

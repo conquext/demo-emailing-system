@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-export const baseURL = 'http://localhost:3003'
+export const baseURL =
+  process.env.BASE_URL || 'https://rewarddemo.herokuapp.com'
 
 export const makeApiCall = (axiosConfigObj) => {
   const config = {

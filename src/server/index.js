@@ -20,7 +20,7 @@ const { errorResponse, successResponse } = Response
 
 // Set Environment
 const dev = process.env.NODE_ENV || 'development'
-const PORT = process.env.PORT || process.env.port
+const { PORT = 5000 } = process.env.PORT
 const isDev = String(dev).includes('dev')
 
 // Next App

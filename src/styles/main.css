@@ -43,3 +43,7 @@ h6 {
 .justify-end {
   justify-content: flex-end !important;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

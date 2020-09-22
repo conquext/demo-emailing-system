@@ -64,6 +64,13 @@ app
     server.use(bodyParser.urlencoded({ extended: true }))
     server.use(bodyParser.json())
 
+    server.get('/test', async (req, res) => {
+      try {
+        return successResponse(res, 200, 'Hey', 'App is working')
+      } catch (error) {
+        return errorResponse(res, 500, error)
+      }
+    })
     server.get('/staffs', async (req, res) => {
       try {
         const staff = await StaffUtils.findAllStaff()

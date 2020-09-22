@@ -91,248 +91,274 @@ app.prepare().then(function () {
     extended: true
   }));
   server.use(_bodyParser["default"].json());
-  server.get('/staffs', /*#__PURE__*/function () {
+  server.get('/test', /*#__PURE__*/function () {
     var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
-      var staff;
       return _regenerator["default"].wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              _context.next = 3;
-              return _staff["default"].findAllStaff();
+              return _context.abrupt("return", successResponse(res, 200, 'Hey', 'App is working'));
 
-            case 3:
-              staff = _context.sent;
-              return _context.abrupt("return", successResponse(res, 200, 'All Staff members', staff));
-
-            case 7:
-              _context.prev = 7;
+            case 4:
+              _context.prev = 4;
               _context.t0 = _context["catch"](0);
               return _context.abrupt("return", errorResponse(res, 500, _context.t0));
 
-            case 10:
+            case 7:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 7]]);
+      }, _callee, null, [[0, 4]]);
     }));
 
     return function (_x, _x2) {
       return _ref.apply(this, arguments);
     };
   }());
-  server["delete"]('/staffs/:email', /*#__PURE__*/function () {
+  server.get('/staffs', /*#__PURE__*/function () {
     var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
-      var email, staff, updates;
+      var staff;
       return _regenerator["default"].wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
-              email = req.params.email;
-              _context2.next = 4;
-              return _staff["default"].findStaff('email', email);
-
-            case 4:
-              staff = _context2.sent;
-
-              if (!staff) {
-                _context2.next = 10;
-                break;
-              }
-
-              _context2.next = 8;
-              return _staff["default"].removeStaff('email', email);
-
-            case 8:
-              _context2.next = 11;
-              break;
-
-            case 10:
-              return _context2.abrupt("return", errorResponse(res, 404, 'Staff not found'));
-
-            case 11:
-              _context2.next = 13;
+              _context2.next = 3;
               return _staff["default"].findAllStaff();
 
-            case 13:
-              updates = _context2.sent;
-              return _context2.abrupt("return", successResponse(res, 200, 'All Staff members', updates));
+            case 3:
+              staff = _context2.sent;
+              return _context2.abrupt("return", successResponse(res, 200, 'All Staff members', staff));
 
-            case 17:
-              _context2.prev = 17;
+            case 7:
+              _context2.prev = 7;
               _context2.t0 = _context2["catch"](0);
               return _context2.abrupt("return", errorResponse(res, 500, _context2.t0));
 
-            case 20:
+            case 10:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 17]]);
+      }, _callee2, null, [[0, 7]]);
     }));
 
     return function (_x3, _x4) {
       return _ref2.apply(this, arguments);
     };
   }());
-  server.post('/sendinvite', /*#__PURE__*/function () {
+  server["delete"]('/staffs/:email', /*#__PURE__*/function () {
     var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
-      var token, data, _iterator, _step, d, userFound, isInvited, emailSent, newUser, _emailSent, updates;
-
+      var email, staff, updates;
       return _regenerator["default"].wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.prev = 0;
-              token = 'rerteESDew432f';
+              email = req.params.email;
               _context3.next = 4;
+              return _staff["default"].findStaff('email', email);
+
+            case 4:
+              staff = _context3.sent;
+
+              if (!staff) {
+                _context3.next = 10;
+                break;
+              }
+
+              _context3.next = 8;
+              return _staff["default"].removeStaff('email', email);
+
+            case 8:
+              _context3.next = 11;
+              break;
+
+            case 10:
+              return _context3.abrupt("return", errorResponse(res, 404, 'Staff not found'));
+
+            case 11:
+              _context3.next = 13;
+              return _staff["default"].findAllStaff();
+
+            case 13:
+              updates = _context3.sent;
+              return _context3.abrupt("return", successResponse(res, 200, 'All Staff members', updates));
+
+            case 17:
+              _context3.prev = 17;
+              _context3.t0 = _context3["catch"](0);
+              return _context3.abrupt("return", errorResponse(res, 500, _context3.t0));
+
+            case 20:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[0, 17]]);
+    }));
+
+    return function (_x5, _x6) {
+      return _ref3.apply(this, arguments);
+    };
+  }());
+  server.post('/sendinvite', /*#__PURE__*/function () {
+    var _ref4 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(req, res) {
+      var token, data, _iterator, _step, d, userFound, isInvited, emailSent, newUser, _emailSent, updates;
+
+      return _regenerator["default"].wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              token = 'rerteESDew432f';
+              _context4.next = 4;
               return _staff["default"].getAllReqBody(req.body);
 
             case 4:
-              data = _context3.sent;
+              data = _context4.sent;
 
               if (!data) {
-                _context3.next = 51;
+                _context4.next = 51;
                 break;
               }
 
               _iterator = _createForOfIteratorHelper(data);
-              _context3.prev = 7;
+              _context4.prev = 7;
 
               _iterator.s();
 
             case 9:
               if ((_step = _iterator.n()).done) {
-                _context3.next = 43;
+                _context4.next = 43;
                 break;
               }
 
               d = _step.value;
-              _context3.prev = 11;
-              _context3.next = 14;
+              _context4.prev = 11;
+              _context4.next = 14;
               return _staff["default"].findStaff('email', d.email);
 
             case 14:
-              userFound = _context3.sent;
+              userFound = _context4.sent;
 
               if (!userFound) {
-                _context3.next = 26;
+                _context4.next = 26;
                 break;
               }
 
               isInvited = userFound.inviteSent === 'Yes';
 
               if (isInvited) {
-                _context3.next = 24;
+                _context4.next = 24;
                 break;
               }
 
-              _context3.next = 20;
+              _context4.next = 20;
               return (0, _mail["default"])(userFound, token);
 
             case 20:
-              emailSent = _context3.sent;
+              emailSent = _context4.sent;
 
               if (!(emailSent || emailSent === 'sent')) {
-                _context3.next = 24;
+                _context4.next = 24;
                 break;
               }
 
-              _context3.next = 24;
+              _context4.next = 24;
               return _staff["default"].updateStaff(userFound.email, {
                 inviteSent: 'Yes'
               });
 
             case 24:
-              _context3.next = 36;
+              _context4.next = 36;
               break;
 
             case 26:
-              _context3.next = 28;
+              _context4.next = 28;
               return _staff["default"].createStaff(d);
 
             case 28:
-              newUser = _context3.sent;
+              newUser = _context4.sent;
 
               if (!(newUser && newUser.email)) {
-                _context3.next = 36;
+                _context4.next = 36;
                 break;
               }
 
-              _context3.next = 32;
+              _context4.next = 32;
               return (0, _mail["default"])({
                 email: 'a.rasheedalabi@gmail.com'
               }, token);
 
             case 32:
-              _emailSent = _context3.sent;
+              _emailSent = _context4.sent;
 
               if (!(!_emailSent || _emailSent === 'fail')) {
-                _context3.next = 36;
+                _context4.next = 36;
                 break;
               }
 
-              _context3.next = 36;
+              _context4.next = 36;
               return _staff["default"].updateStaff(newUser.email, {
                 inviteSent: 'No'
               });
 
             case 36:
-              _context3.next = 41;
+              _context4.next = 41;
               break;
 
             case 38:
-              _context3.prev = 38;
-              _context3.t0 = _context3["catch"](11);
-              console.log('problems with user', _context3.t0);
+              _context4.prev = 38;
+              _context4.t0 = _context4["catch"](11);
+              console.log('problems with user', _context4.t0);
 
             case 41:
-              _context3.next = 9;
+              _context4.next = 9;
               break;
 
             case 43:
-              _context3.next = 48;
+              _context4.next = 48;
               break;
 
             case 45:
-              _context3.prev = 45;
-              _context3.t1 = _context3["catch"](7);
+              _context4.prev = 45;
+              _context4.t1 = _context4["catch"](7);
 
-              _iterator.e(_context3.t1);
+              _iterator.e(_context4.t1);
 
             case 48:
-              _context3.prev = 48;
+              _context4.prev = 48;
 
               _iterator.f();
 
-              return _context3.finish(48);
+              return _context4.finish(48);
 
             case 51:
-              _context3.next = 53;
+              _context4.next = 53;
               return _staff["default"].findAllStaff();
 
             case 53:
-              updates = _context3.sent;
-              return _context3.abrupt("return", successResponse(res, 201, 'Invites Sent', updates));
+              updates = _context4.sent;
+              return _context4.abrupt("return", successResponse(res, 201, 'Invites Sent', updates));
 
             case 57:
-              _context3.prev = 57;
-              _context3.t2 = _context3["catch"](0);
-              return _context3.abrupt("return", errorResponse(res, 500, _context3.t2));
+              _context4.prev = 57;
+              _context4.t2 = _context4["catch"](0);
+              return _context4.abrupt("return", errorResponse(res, 500, _context4.t2));
 
             case 60:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, null, [[0, 57], [7, 45, 48, 51], [11, 38]]);
+      }, _callee4, null, [[0, 57], [7, 45, 48, 51], [11, 38]]);
     }));
 
-    return function (_x5, _x6) {
-      return _ref3.apply(this, arguments);
+    return function (_x7, _x8) {
+      return _ref4.apply(this, arguments);
     };
   }());
   server.use(_routes["default"]); // Use React application on server

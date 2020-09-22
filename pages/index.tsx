@@ -362,12 +362,11 @@ const IndexPage: NextPage = () => {
         id: 'selection',
         // The header can use the table's getToggleAllRowsSelectedProps method
         // to render a checkbox
-        Header: ({ getToggleAllPageRowsSelectedProps }) =>
-          !isEmpty(data) && (
-            <div>
-              <Checkbox {...getToggleAllPageRowsSelectedProps()} />
-            </div>
-          ),
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <div>
+            <Checkbox {...getToggleAllPageRowsSelectedProps()} />
+          </div>
+        ),
         // The cell can use the individual row's getToggleRowSelectedProps method
         // to the render a checkbox
         Cell: ({ row }) => (

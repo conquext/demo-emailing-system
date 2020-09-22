@@ -6,7 +6,7 @@
     "dev": "next",
     "build2": "next build",
     "start2": "next start",
-    "build": "rm -rf ./build && mkdir build && babel ./src/server --out-dir build",
+    "build": "rm -rf ./build && next build && mkdir build && babel ./src/server --out-dir build",
     "start": "npm run build && node ./build/index.js",
     "serve": "nodemon --exec babel-node src/server/index.js",
     "serve:dev": "nodemon --exec babel-node src/server/index.js",

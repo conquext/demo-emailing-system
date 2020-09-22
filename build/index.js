@@ -51,8 +51,8 @@ var errorResponse = _response["default"].errorResponse,
     successResponse = _response["default"].successResponse; // Set Environment
 
 var dev = process.env.NODE_ENV || 'development';
-var _process$env$PORT$POR = process.env.PORT.PORT,
-    PORT = _process$env$PORT$POR === void 0 ? 5000 : _process$env$PORT$POR;
+var _process$env$PORT = process.env.PORT,
+    PORT = _process$env$PORT === void 0 ? 5000 : _process$env$PORT;
 var isDev = String(dev).includes('dev'); // Next App
 
 var app = (0, _next["default"])({

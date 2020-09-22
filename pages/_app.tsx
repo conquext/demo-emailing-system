@@ -7,6 +7,7 @@ import NProgress from 'nprogress'
 import '@styles/main.css'
 import '@styles/nprogress.css'
 import 'react-toastify/dist/ReactToastify.css'
+import 'react-loadingmask/dist/react-loadingmask.css'
 
 Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
@@ -21,6 +22,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         <link
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;800&display=swap"
           rel="stylesheet"
+        />
+        <link
+          rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
         />
       </Head>
       <Component {...pageProps} />

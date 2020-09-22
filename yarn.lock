@@ -9009,6 +9009,15 @@ react-is@16.13.1, react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0, react-
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-loadingmask@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/react-loadingmask/-/react-loadingmask-4.0.6.tgz#4a9b5887d8451c4b7ee99b07eb3cd3b38ecf5b08"
+  integrity sha512-E+hjcSYhqkwgGEBRpAtdz/OExyr4VQjZjmWBSg3nOYXG3tLPS6L2cYWmxCrIvSSD9wqIGvm7i5ZEgSzFsXmZrw==
+  dependencies:
+    classnames "^2.2.6"
+    react "^16.13.1"
+    react-dom "^16.13.1"
+
 react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"

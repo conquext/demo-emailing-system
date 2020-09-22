@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { NextPage } from 'next'
 import { motion } from 'framer-motion'
 import XLSX from 'xlsx'
 import { ToastContainer, toast } from 'react-toastify'
+import LoadingMask from 'react-loadingmask'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import styled from 'styled-components'
@@ -110,6 +111,7 @@ const EditableCell = ({
 }) => {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue)
+  const inputRef = useRef(null)
 
   const onChange = (e) => {
     setValue(e.target.value)
@@ -120,6 +122,12 @@ const EditableCell = ({
     updateData(index, id, value)
   }
 
+  const onKeyPress = (e) => {
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      inputRef.current && inputRef.current.blur()
+    }
+  }
+
   // If the initialValue is changed external, sync it up with our state
   useEffect(() => {
     setValue(initialValue)
@@ -128,12 +136,17 @@ const EditableCell = ({
   return editableFields.includes(id) ? (
     <input
       value={value}
+      // id={id}
+      // name={id} disabled because browser autocomplete can be annoying
+      ref={inputRef}
       onChange={onChange}
+      onKeyPress={onKeyPress}
+      onKeyUp={onKeyPress}
       onBlur={onBlur}
-      className="w-full px-2 bg-transparent focus:bg-white"
+      className="w-full px-2 text-center bg-transparent focus:bg-white"
     />
   ) : (
-    <div className="">{value}</div>
+    <div className="inline-flex justify-center w-full text-center">{value}</div>
   )
 }
 
@@ -189,6 +202,7 @@ function DefaultColumnFilter({
 const IndexPage: NextPage = () => {
   const [data, setData] = useState([])
   const [pageLoading, setPageLoading] = useState(false)
+  const [inlinePageLoading, setInlinePageLoading] = useState(false)
   // const [data, setData] = useState(() => makeData(6))
   const columns = useMemo(
     () => [
@@ -272,6 +286,7 @@ const IndexPage: NextPage = () => {
 
   const getAndSetUsers = async () => {
     setPageLoading(true)
+
     const dataX = (await getUsers()) as any
     const data = dataX?.data as unknown[]
     if (!isEmpty(data)) {
@@ -284,6 +299,7 @@ const IndexPage: NextPage = () => {
   }, [])
 
   const uploadDatabase = (file, type) => {
+    setInlinePageLoading(true)
     switch (type) {
       case 'spreadsheet':
         //  var first_worksheet = workbook.Sheets[workbook.SheetNames[0]]
@@ -337,13 +353,15 @@ const IndexPage: NextPage = () => {
       default:
         break
     }
+    setInlinePageLoading(false)
   }
 
   const deleteRecord = async (row) => {
-    const newData = data.filter((d) => d.email !== row.original.email)
-    await deleteUser(row.original)
+    setInlinePageLoading(true)
+    const { data: update } = (await deleteUser(row.original)) as any
     toast.success('Deleted Successfully')
-    setData(newData)
+    setData(update)
+    setInlinePageLoading(false)
   }
 
   const defaultColumn = React.useMemo(
@@ -626,7 +644,7 @@ const IndexPage: NextPage = () => {
 
     const selectedMembers = selectedFlatRows.map((d) => d.original)
     const uninvitedMembers = selectedMembers.filter(
-      (d) => d['testSent']?.toLowerCase() !== 'no'
+      (d) => d['inviteSent']?.toLowerCase() === 'no'
     )
     const uninvitedLen = uninvitedMembers.length
 
@@ -697,6 +715,7 @@ const IndexPage: NextPage = () => {
   }
 
   const handleFormSubmit = async (data, cb) => {
+    setInlinePageLoading(true)
     const payload: {
       firstName?: string
       lastName?: string
@@ -718,96 +737,120 @@ const IndexPage: NextPage = () => {
       toast.success('New data added')
       setData(resp.data)
     }
+    setInlinePageLoading(false)
   }
 
+  const fontSize = 24
+  const Icon = ({ type = 'rocket', className = '', style = {} } = {}) => (
+    <i className={`fas fa-${type} ${className}`} style={style} />
+  )
+
+  const RocketHor = (
+    <Icon
+      type="rocket"
+      className="animation-horizon"
+      style={{ fontSize, color: '#120338' }}
+    />
+  )
+
   return (
-    <Layout
-      title="Your Awesome App"
-      className="container max-w-6xl py-8 overflow-auto"
-      header={headerSearch()}
+    <LoadingMask
+      loading={inlinePageLoading}
+      text={'loading...'}
+      indicator={RocketHor}
     >
-      <ToastContainer />
-
-      {/* <h1 className="mb-4 text-3xl font-black dark:text-gray-100">Welcome</h1> */}
-      <h3 className="mb-4 text-lg font-bolder">
-        Demo spreadsheet upload and email list system.
-      </h3>
-      <p className="p-2 text-xs text-blue-600">
-        You can upload a spreadsheet (.xls, .xlsx) and click the checkbox to
-        send invite to multiple selections at a go
-      </p>
-      <p className="p-2 text-xs text-blue-600">
-        You can send individuaal invite by hovering on the invite sent column
-        and a dropdown menu appears for first time users
-      </p>
-      <span className="text-red-500">
-        You can delete a record{' '}
-        <span role="img" aria-label="sad">
-          😥
-        </span>
-      </span>
-      <p className="p-2 text-xs text-blue-600">
-        You can edit a row inline by clicking on the data
-      </p>
-      <p className="p-2 text-xs text-blue-600">
-        You can add a new record. Please note that it goes to the database only
-        when you click to send invite
-      </p>
-
-      <div>
-        <Formik
-          initialValues={{ fName: '', lName: '', email: '' }}
-          onSubmit={handleFormSubmit}
-          validateOnBlur={false}
-          validateOnMount={false}
-          validationSchema={Yup.object({
-            fName: Yup.string()
-              .min(3, 'Must contain 3 characters or more')
-              .required('First Name is required'),
-            lName: Yup.string()
-              .min(3, 'Must contain 3 characters or more')
-              .required('Last Name is required'),
-            email: Yup.string()
-              .email('Invalid email address')
-              .required('Please provide the email'),
-          })}
+      <div style={{ width: '100vw', height: '100vh' }}>
+        <Layout
+          title="Your Awesome App"
+          className="container max-w-6xl py-8 overflow-auto"
+          header={headerSearch()}
         >
-          {(formikProps) => (
-            <TableComponent
-              columns={columns}
-              data={data}
-              setData={setData}
-              tableClassName="w-full"
-              filterTypes={filterTypes}
-              defaultColumn={defaultColumn}
-              globalFilter={{
-                use: true,
-                Component: GlobalFilter,
-                pos: 'below',
-              }}
-              renderHeader={renderTableHeader}
-              // renderFilter= {(column: unknown) => JSX.Element}
-              // renderTableBody={renderTableBody}
-              renderTableRow={renderTableRow}
-              renderExtraTableTd={(controls) =>
-                renderExtraTableTd(controls, formikProps)
-              }
-              loading={pageLoading}
-              // renderTableCell= {(cell: unknown) => JSX.Element}
-              handleTableControls={{ jsx: handleBatchActions }}
-              tableWrapper={{
-                use: true,
-                wrapper: tableWrapper,
-                props: {
-                  onSubmit: formikProps.handleSubmit,
-                },
-              }}
-              customHook={renderTableHooks}
-            />
-          )}
-        </Formik>
+          <ToastContainer />
+
+          {/* <h1 className="mb-4 text-3xl font-black dark:text-gray-100">Welcome</h1> */}
+          <h3 className="mb-2 text-lg font-bolder">
+            Demo spreadsheet upload and email list system
+          </h3>
+          <p className="p-2 text-xs text-blue-600">
+            You can upload a spreadsheet (.xls, .xlsx), and use the checkbox to
+            send invite to multiple selections at a go or You can send
+            individual invite by toggling the inviteSent on hover.{' '}
+            <em className="text-purple-600">
+              (does not send to the server automatically)
+            </em>
+            .
+          </p>
+          <em className="p-2 text-xs text-green-600 ">
+            (Excel columns must include firtName, lastName, age and so on in
+            that format)
+          </em>
+          <p className="p-2 text-xs text-blue-600">
+            You can edit a row inline by clicking on the data or add a new
+            record.
+          </p>
+          <span className="p-2 text-xs text-red-700">
+            Not mobile responsive yet{' '}
+            <span role="img" aria-label="sad">
+              😥
+            </span>
+          </span>
+
+          <div>
+            <Formik
+              initialValues={{ fName: '', lName: '', email: '' }}
+              onSubmit={handleFormSubmit}
+              validateOnBlur={false}
+              validateOnMount={false}
+              validationSchema={Yup.object({
+                fName: Yup.string()
+                  .min(3, 'Must contain 3 characters or more')
+                  .required('First Name is required'),
+                lName: Yup.string()
+                  .min(3, 'Must contain 3 characters or more')
+                  .required('Last Name is required'),
+                email: Yup.string()
+                  .email('Invalid email address')
+                  .required('Please provide the email'),
+              })}
+            >
+              {(formikProps) => (
+                <TableComponent
+                  columns={columns}
+                  data={data}
+                  setData={setData}
+                  tableClassName="w-full"
+                  filterTypes={filterTypes}
+                  defaultColumn={defaultColumn}
+                  globalFilter={{
+                    use: true,
+                    Component: GlobalFilter,
+                    pos: 'below',
+                  }}
+                  renderHeader={renderTableHeader}
+                  // renderFilter= {(column: unknown) => JSX.Element}
+                  // renderTableBody={renderTableBody}
+                  renderTableRow={renderTableRow}
+                  renderExtraTableTd={(controls) =>
+                    renderExtraTableTd(controls, formikProps)
+                  }
+                  loading={pageLoading}
+                  // renderTableCell= {(cell: unknown) => JSX.Element}
+                  handleTableControls={{ jsx: handleBatchActions }}
+                  tableWrapper={{
+                    use: true,
+                    wrapper: tableWrapper,
+                    props: {
+                      onSubmit: formikProps.handleSubmit,
+                    },
+                  }}
+                  customHook={renderTableHooks}
+                />
+              )}
+            </Formik>
+          </div>
+        </Layout>
       </div>
-    </Layout>
+    </LoadingMask>
   )
 }
 

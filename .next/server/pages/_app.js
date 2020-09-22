@@ -101,6 +101,13 @@ module.exports = __webpack_require__("cha2");
 
 /***/ }),
 
+/***/ "1crH":
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+
 /***/ "4Q3z":
 /***/ (function(module, exports) {
 
@@ -141,7 +148,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _styles_nprogress_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_styles_nprogress_css__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var react_toastify_dist_ReactToastify_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("jDDT");
 /* harmony import */ var react_toastify_dist_ReactToastify_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_toastify_dist_ReactToastify_css__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react_loadingmask_dist_react_loadingmask_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("1crH");
+/* harmony import */ var react_loadingmask_dist_react_loadingmask_css__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_loadingmask_dist_react_loadingmask_css__WEBPACK_IMPORTED_MODULE_7__);
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0__["createElement"];
+
 
 
 
@@ -165,6 +175,9 @@ const App = ({
   }), __jsx("link", {
     href: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;800&display=swap",
     rel: "stylesheet"
+  }), __jsx("link", {
+    rel: "stylesheet",
+    href: "https://use.fontawesome.com/releases/v5.2.0/css/all.css"
   })), __jsx(Component, pageProps));
 };
 

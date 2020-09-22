@@ -16,7 +16,12 @@ class Document extends NextDocument {
   render() {
     return (
       <Html lang="en">
-        <Head></Head>
+        <Head>
+          <link
+            href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+            rel="stylesheet"
+          />
+        </Head>
         <body className="min-h-screen">
           <script
             dangerouslySetInnerHTML={{

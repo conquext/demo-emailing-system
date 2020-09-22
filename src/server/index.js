@@ -11,7 +11,6 @@ import apiRoutes from './routes'
 import sendEmail from './services/mail'
 import StaffUtils from './utils/staff'
 import Response from './utils/response'
-import { Staff } from './models'
 
 dotEnv.config()
 
@@ -21,7 +20,7 @@ const { errorResponse, successResponse } = Response
 
 // Set Environment
 const dev = process.env.NODE_ENV || 'development'
-const PORT = process.env.PORT || 3003
+const PORT = process.env.PORT || process.env.port
 const isDev = String(dev).includes('dev')
 
 // Next App
@@ -153,7 +152,7 @@ app
       return handle(req, res)
     })
 
-    server.listen(PORT, '0.0.0.0', (err) => {
+    server.listen(PORT, (err) => {
       if (err) throw err
       console.log(`> Ready on ${PORT}`)
     })

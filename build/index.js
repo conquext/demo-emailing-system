@@ -290,7 +290,7 @@ app.prepare().then(function () {
 
               _context4.next = 32;
               return (0, _mail["default"])({
-                email: 'a.rasheedalabi@gmail.com'
+                email: newUser.email
               }, token);
 
             case 32:

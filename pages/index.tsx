@@ -729,9 +729,31 @@ const IndexPage: NextPage = () => {
       <ToastContainer />
 
       {/* <h1 className="mb-4 text-3xl font-black dark:text-gray-100">Welcome</h1> */}
-      <p className="mb-4 text-lg font-bolder">
+      <h3 className="mb-4 text-lg font-bolder">
         Demo spreadsheet upload and email list system.
+      </h3>
+      <p className="p-2 text-xs text-blue-600">
+        You can upload a spreadsheet (.xls, .xlsx) and click the checkbox to
+        send invite to multiple selections at a go
       </p>
+      <p className="p-2 text-xs text-blue-600">
+        You can send individuaal invite by hovering on the invite sent column
+        and a dropdown menu appears for first time users
+      </p>
+      <span className="text-red-500">
+        You can delete a record{' '}
+        <span role="img" aria-label="sad">
+          😥
+        </span>
+      </span>
+      <p className="p-2 text-xs text-blue-600">
+        You can edit a row inline by clicking on the data
+      </p>
+      <p className="p-2 text-xs text-blue-600">
+        You can add a new record. Please note that it goes to the database only
+        when you click to send invite
+      </p>
+
       <div>
         <Formik
           initialValues={{ fName: '', lName: '', email: '' }}

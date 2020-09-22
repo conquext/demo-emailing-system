@@ -120,7 +120,7 @@ app
                 const newUser = await StaffUtils.createStaff(d)
                 if (newUser && newUser.email) {
                   const emailSent = await sendEmail(
-                    { email: 'a.rasheedalabi@gmail.com' },
+                    { email: newUser.email },
                     token
                   )
                   if (!emailSent || emailSent === 'fail')

@@ -1,1 +1,0 @@
-{"ast":null,"code":"export default {\n  INDEX: {\n    href: '/',\n    as: '/'\n  },\n  COMPONENTS: {\n    href: '/components',\n    as: '/components'\n  },\n  TYPOGRAPHY: {\n    href: '/typography',\n    as: '/typography'\n  }\n};","map":null,"metadata":{},"sourceType":"module"}

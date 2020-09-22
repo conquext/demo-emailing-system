@@ -35,3 +35,11 @@ h6 {
 .radius-input:hover {
   border: #4fd1c5;
 }
+
+.text-right {
+  text-align: right !important;
+}
+
+.justify-end {
+  justify-content: flex-end !important;
+}

@@ -312,7 +312,7 @@ const IndexPage: NextPage = () => {
         const f = file.selectedFile[0]
         const reader = new FileReader()
         const stateData = data
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           const data = e.target.result
           const readedData = XLSX.read(data, { type: 'binary' })
           const wsname = readedData.SheetNames[0]
@@ -343,9 +343,16 @@ const IndexPage: NextPage = () => {
             })
             return d
           })
-          const update = newDataSet.concat(stateData)
 
+          let update = newDataSet
+
+          const resp: any = await inviteUser(newDataSet)
+          if (resp) {
+            toast.success('Upload successful')
+            update = Array.from(new Set(newDataSet.concat(stateData)))
+          }
           setData(update)
+          setInlinePageLoading(false)
         }
         reader.readAsBinaryString(f)
         break

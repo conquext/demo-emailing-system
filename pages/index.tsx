@@ -781,14 +781,10 @@ const IndexPage: NextPage = () => {
           <p className="p-2 text-xs text-blue-600">
             You can upload a spreadsheet (.xls, .xlsx), and use the checkbox to
             send invite to multiple selections at a go or You can send
-            individual invite by toggling the inviteSent on hover.{' '}
-            <em className="text-purple-600">
-              (does not send to the server automatically)
-            </em>
-            .
+            individual invite by toggling the inviteSent on hover.
           </p>
           <em className="p-2 text-xs text-green-600 ">
-            (Excel columns must include firtName, lastName, age and so on in
+            (Excel columns must include firstName, lastName, age and so on in
             that format)
           </em>
           <p className="p-2 text-xs text-blue-600">

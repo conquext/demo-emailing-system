@@ -7,7 +7,8 @@ To reduce the CSS bundle size of TailwindCSS, I added [PurgeCSS](https://www.pur
 ## Development
 
 1. `npm install`
-2. `npm run serve:dev`
+2. Rename .env.sample file to .env and set the parameters appropriately
+3. `npm run serve:dev`
 
 ## Testing
 
